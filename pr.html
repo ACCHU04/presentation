@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Recursion — Notes, Examples, Flowcharts & Diagrams</title>
+  <style>
+    :root{--bg:#f6fbff;--card:#fff;--accent:#0b5dd7;--muted:#6b7280;--radius:12px;--pad:18px;--max:1100px}
+    *{box-sizing:border-box}
+    body{font-family:Inter,Segoe UI,Roboto,Arial; margin:22px; background:var(--bg); color:#081227}
+    .wrap{max-width:var(--max); margin:0 auto; display:grid; gap:16px}
+    header{display:flex;align-items:flex-start;gap:12px}
+    header h1{margin:0;font-size:1.5rem}
+    header p{margin:6px 0 0 0;color:var(--muted)}
+    .card{background:var(--card); border-radius:var(--radius); padding:var(--pad); box-shadow:0 8px 20px rgba(12,20,40,0.06)}
+    .grid{display:grid; grid-template-columns:1fr 420px; gap:16px}
+    .full{grid-column:1/-1}
+    h2{margin:0 0 8px 0}
+    p{margin:0 0 10px 0;color:var(--muted)}
+    code{background:#f3f4f6;padding:2px 6px;border-radius:6px}
+    pre{background:#0b1220;color:#e6f3ff;padding:12px;border-radius:8px;overflow:auto}
+    .examples{display:grid;gap:12px}
+    .diagrams{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+    .diagram{background:#fbfeff;border-radius:10px;padding:10px}
+    svg{max-width:100%;height:auto}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Recursion — Complete Notes (Beginner → Examples → Visuals)</h1>
+        <p>All the theory, step-by-step problem solving, code examples (Python), and SVG flowcharts/diagrams in one file.</p>
+      </div>
+    </header>
+
+    <section class="grid">
+      <main class="card">
+        <h2>1. What is Recursion?</h2>
+        <p><strong>Recursion</strong> is a programming technique where a function <em>calls itself</em> to solve a smaller part of the same problem. Each call works on a smaller input until a simple base case stops the recursion.</p>
+
+        <h2>2. Required parts of a recursive function</h2>
+        <ul>
+          <li><strong>Base case</strong> — the simplest input where the answer is known and recursion stops.</li>
+          <li><strong>Recursive case</strong> — the part where the function calls itself with a smaller or simpler input.</li>
+        </ul>
+
+        <h2>3. Why use recursion?</h2>
+        <p>Recursion helps break complex problems into smaller identical tasks. It's useful for hierarchical structures (trees) and divide-and-conquer algorithms (merge sort, quicksort), and for problems naturally defined recursively (factorial, Fibonacci, Tower of Hanoi).</p>
+
+        <h2>4. How recursion works (step-by-step)</h2>
+        <p>Example function skeleton:</p>
+        <pre>def fun(n):
+    if n == 0:
+        return 1        # base case
+    else:
+        return n * fun(n-1)  # recursive case
+</pre>
+        <p>Call <code>fun(4)</code> — execution grows downward creating stack frames, then returns propagate upward combining results.</p>
+
+        <h2>5. Key Terms</h2>
+        <ul>
+          <li><strong>Stack memory</strong> — each recursive call creates a new frame on the call stack (local variables, return address).</li>
+          <li><strong>Stack overflow</strong> — occurs if recursion depth exceeds the available call stack (no base case or too deep recursion).</li>
+        </ul>
+
+        <h2>6. Advantages & Disadvantages</h2>
+        <p><strong>Advantages:</strong> concise, expressive for trees/graphs, mirrors mathematical definitions.<br>
+           <strong>Disadvantages:</strong> uses more memory (call frames), may be slower than iterative solutions, risk of stack overflow.</p>
+
+        <h2>7. Recursive Problem-Solving Technique (3 steps)</h2>
+        <ol>
+          <li><strong>Identify the base case</strong> — smallest input you know the answer for.</li>
+          <li><strong>Break the problem</strong> into smaller instances and call the function recursively.</li>
+          <li><strong>Combine results</strong> from subproblems to build the final answer.</li>
+        </ol>
+
+        <h2>8. Examples (Python)</h2>
+        <div class="examples">
+          <div>
+            <h3>Factorial</h3>
+            <pre>def fact(n):
+    if n == 0:
+        return 1
+    return n * fact(n-1)
+
+print(fact(5))  # 120</pre>
+          </div>
+
+          <div>
+            <h3>Fibonacci (naïve recursive)</h3>
+            <pre>def fib(n):
+    if n <= 1:
+        return n
+    return fib(n-1) + fib(n-2)
+
+print(fib(6))  # 8</pre>
+            <p style="color:var(--muted);margin-top:6px">Note: this version repeats work; memoization or iterative DP is better.</p>
+          </div>
+
+          <div>
+            <h3>Sum of first N natural numbers</h3>
+            <pre>def sum_n(n):
+    if n == 0:
+        return 0
+    return n + sum_n(n-1)
+
+print(sum_n(5))  # 15</pre>
+          </div>
+
+          <div>
+            <h3>Reverse a string</h3>
+            <pre>def reverse(s):
+    if s == "":
+        return s
+    return reverse(s[1:]) + s[0]
+
+print(reverse("hello"))  # olleh</pre>
+          </div>
+
+          <div>
+            <h3>Tower of Hanoi (move print)</h3>
+            <pre>def hanoi(n, src, aux, dst):
+    if n == 1:
+        print(f"Move disk 1 from {src} to {dst}")
+        return
+    hanoi(n-1, src, dst, aux)
+    print(f"Move disk {n} from {src} to {dst}")
+    hanoi(n-1, aux, src, dst)
+
+hanoi(3, 'A', 'B', 'C')</pre>
+          </div>
+        </div>
+
+        <h2>9. Real-life analogy (Indian context)</h2>
+        <p>Nested gift boxes: a big box contains a smaller box which contains another smaller box until the smallest contains a gift. The smallest box is the base case; opening boxes is the recursive step.</p>
+
+        <h2>10. When to use recursion</h2>
+        <p>Use recursion for trees/graphs (DFS), divide-and-conquer, backtracking (N-Queens, Sudoku), and mathematical definitions. Avoid when performance or memory constraints prefer iterative solutions.</p>
+
+        <h2>11. Quick exam summary</h2>
+        <p>Recursion = function calling itself. Must have base case & recursive case. Easy to implement for hierarchical problems but can be memory-heavy and slow for some problems.</p>
+
+        <hr/>
+        <h2>12. Visuals — Flowchart & Diagrams</h2>
+        <p>Below are the embedded SVG flowcharts and diagrams: a flowchart for recursion (factorial example), and three diagrams — Tower of Hanoi, Fibonacci call tree, and Call Stack.</p>
+
+        <div class="diagrams">
+          <!-- Flowchart SVG (compact) -->
+          <div class="diagram">
+            <h3>Recursion Flowchart</h3>
+            <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" aria-label="Recursion flowchart">
+              <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                  <path d="M0 0 L10 5 L0 10 z" fill="#0b1220"/>
+                </marker>
+              </defs>
+              <rect x="220" y="6" width="260" height="46" rx="10" fill="#083c9f"/>
+              <text x="350" y="38" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">RECURSION</text>
+
+              <rect x="200" y="70" width="300" height="44" rx="8" fill="#dff0ff" stroke="#0b5dd7"/>
+              <text x="350" y="101" text-anchor="middle" fill="#042d66" font-size="16">Recursive Function</text>
+
+              <rect x="120" y="140" width="190" height="44" rx="8" fill="#dff7e6" stroke="#1f8a3a"/>
+              <text x="215" y="170" text-anchor="middle" fill="#165b2b" font-size="14">Base Case</text>
+              <rect x="390" y="140" width="210" height="44" rx="8" fill="#fff5df" stroke="#b87a00"/>
+              <text x="495" y="170" text-anchor="middle" fill="#8a5900" font-size="14">Recursive Case</text>
+
+              <line x1="350" y1="114" x2="215" y2="140" stroke="#0b1220" stroke-width="2" marker-end="url(#arrow)"/>
+              <line x1="350" y1="114" x2="495" y2="140" stroke="#0b1220" stroke-width="2" marker-end="url(#arrow)"/>
+
+              <g transform="translate(170,205)">
+                <rect width="360" height="132" rx="12" fill="#eaf3ff" stroke="#cfe4ff"/>
+                <text x="20" y="24" fill="#042d66" font-size="14" font-weight="600">Example — factorial(4)</text>
+                <text x="20" y="46" fill="#0b1220" font-size="16">factorial(4)</text>
+                <text x="40" y="70" fill="#0b1220" font-size="16">→ 4 × factorial(3)</text>
+                <text x="40" y="94" fill="#0b1220" font-size="16">→ 3 × factorial(2)</text>
+                <text x="40" y="118" fill="#0b1220" font-size="16">→ 2 × factorial(1)</text>
+                <text x="40" y="142" fill="#0b1220" font-size="16">→ 1 × factorial(0) = 1</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Three small diagrams combined -->
+          <div class="diagram">
+            <h3>Hanoi • Fibonacci tree • Call stack</h3>
+            <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" aria-label="Three recursion diagrams">
+              <!-- Tower of Hanoi -->
+              <g transform="translate(8,8)">
+                <rect x="0" y="0" width="220" height="240" rx="8" fill="#fff" stroke="#e6eefc"/>
+                <text x="110" y="20" text-anchor="middle" font-size="14" font-weight="700">Tower of Hanoi</text>
+                <rect x="20" y="60" width="8" height="110" fill="#111" rx="2"/>
+                <rect x="96" y="60" width="8" height="110" fill="#111" rx="2"/>
+                <rect x="172" y="60" width="8" height="110" fill="#111" rx="2"/>
+                <rect x="12" y="178" width="196" height="8" rx="4" fill="#111"/>
+                <rect x="38" y="140" width="124" height="12" rx="6" fill="#ffd86b"/>
+                <rect x="44" y="124" width="110" height="12" rx="6" fill="#f6c24a"/>
+                <rect x="50" y="108" width="96" height="12" rx="6" fill="#f1a824"/>
+                <text x="38" y="198" font-size="12">A</text>
+                <text x="110" y="198" font-size="12">B</text>
+                <text x="182" y="198" font-size="12">C</text>
+              </g>
+
+              <!-- Fibonacci tree -->
+              <g transform="translate(236,8)">
+                <rect x="0" y="0" width="220" height="240" rx="8" fill="#fff" stroke="#eef6ee"/>
+                <text x="110" y="20" text-anchor="middle" font-size="14" font-weight="700">Fibonacci Tree</text>
+                <g font-size="11" fill="#0b1220">
+                  <circle cx="110" cy="40" r="14" fill="#fff" stroke="#0b1220"/>
+                  <text x="110" y="44" text-anchor="middle" font-weight="700">F(6)</text>
+                  <circle cx="60" cy="78" r="12" fill="#fff" stroke="#0b1220"/>
+                  <text x="60" y="82" text-anchor="middle">F(5)</text>
+                  <circle cx="160" cy="78" r="12" fill="#fff" stroke="#0b1220"/>
+                  <text x="160" y="82" text-anchor="middle">F(4)</text>
+                  <path d="M100 48 L66 66" stroke="#0b1220"/>
+                  <path d="M120 48 L154 66" stroke="#0b1220"/>
+                  <circle cx="36" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
+                  <text x="36" y="118" text-anchor="middle">F(2)</text>
+                  <circle cx="84" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
+                  <text x="84" y="118" text-anchor="middle">F(2)</text>
+                  <circle cx="136" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
+                  <text x="136" y="118" text-anchor="middle">F(2)</text>
+                  <circle cx="184" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
+                  <text x="184" y="118" text-anchor="middle">F(1)</text>
+                </g>
+              </g>
+
+              <!-- Call stack -->
+              <g transform="translate(468,8)">
+                <rect x="0" y="0" width="220" height="240" rx="8" fill="#fff" stroke="#fff4e6"/>
+                <text x="110" y="20" text-anchor="middle" font-size="14" font-weight="700">Call Stack</text>
+                <g font-size="13" fill="#0b1220">
+                  <rect x="30" y="44" width="160" height="34" rx="6" fill="#fff" stroke="#0b1220"/>
+                  <text x="110" y="66" text-anchor="middle" font-weight="700">fact(4)</text>
+                  <rect x="30" y="86" width="160" height="34" rx="6" fill="#fff" stroke="#0b1220"/>
+                  <text x="110" y="108" text-anchor="middle" font-weight="700">fact(3)</text>
+                  <rect x="30" y="128" width="160" height="34" rx="6" fill="#fff" stroke="#0b1220"/>
+                  <text x="110" y="150" text-anchor="middle" font-weight="700">fact(2)</text>
+                </g>
+                <text x="180" y="36" font-size="11" fill="#6b7280">Call →</text>
+                <text x="180" y="216" font-size="11" fill="#6b7280">Return ↓</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <h3 style="margin-top:14px">Notes on diagrams</h3>
+        <p>Tower of Hanoi demonstrates the sequence of moves. Fibonacci tree shows branching and repeated calls (explains exponential time for naïve recursion). Call stack shows how frames are pushed on calls and popped on returns.</p>
+
+        <h3>Want animations or downloadable PNG/PDF?</h3>
+        <p>Tell me which diagram (e.g., "animate call stack" or "export Fibonacci tree as PNG") and I'll update the file.</p>
+      </main>
+
+      <aside class="card">
+        <h2>Quick Reference</h2>
+        <p><strong>Base case:</strong> n==0 or smallest input. <br>
+           <strong>Recursive case:</strong> call function with smaller input. <br>
+           <strong>Stack depth:</strong> number of active recursive calls.</p>
+
+        <h3>When recursion is bad</h3>
+        <p>If you need high performance or low memory, convert to iterative or use tail recursion optimization (not available in many Python implementations).</p>
+
+        <h3>Further suggestions</h3>
+        <p>Do you want: printable PDF, editable SVGs, or animated step-through for teaching? Mention one and I’ll add it.</p>
+      </aside>
+
+      <div class="card full">
+        <h2>How to use this file</h2>
+        <p>Save the content as <code>recursion_notes.html</code> and open in a browser. You can copy snippets into your code editor or use the SVGs for slides and assignments.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
