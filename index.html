@@ -3,269 +3,579 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Recursion and Recursive Problem solving</title>
+  <title>Recursion & Recursive Problem Solving </title>
   <style>
-    :root{--bg:#f6fbff;--card:#fff;--accent:#0b5dd7;--muted:#6b7280;--radius:12px;--pad:18px;--max:1100px}
+    :root{
+      --bg-1: #000000;
+      --bg-2: #000000;
+      --card: rgba(255,255,255,0.03);
+      --accent-a: #00ff9c; /* neon green */
+      --accent-b: #7c3aed; /* purple */
+      --muted: rgba(230,238,246,0.75);
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    /* page reset */
     *{box-sizing:border-box}
-    body{font-family:Inter,Segoe UI,Roboto,Arial; margin:22px; background:var(--bg); color:#081227}
-    .wrap{max-width:var(--max); margin:0 auto; display:grid; gap:16px}
-    header{display:flex;align-items:flex-start;gap:12px}
-    header h1{margin:0;font-size:1.5rem}
-    header p{margin:6px 0 0 0;color:var(--muted)}
-    .card{background:var(--card); border-radius:var(--radius); padding:var(--pad); box-shadow:0 8px 20px rgba(12,20,40,0.06)}
-    .grid{display:grid; grid-template-columns:1fr 420px; gap:16px}
-    .full{grid-column:1/-1}
-    h2{margin:0 0 8px 0}
-    p{margin:0 0 10px 0;color:var(--muted)}
-    code{background:#f3f4f6;padding:2px 6px;border-radius:6px}
-    pre{background:#0b1220;color:#e6f3ff;padding:12px;border-radius:8px;overflow:auto}
-    .examples{display:grid;gap:12px}
-    .diagrams{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
-    .diagram{background:#fbfeff;border-radius:10px;padding:10px}
-    svg{max-width:100%;height:auto}
-    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    html,body{margin:0;padding:0;min-height:100%;width:100%;background-attachment:fixed;}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:#ffffff;font-weight:700;
+      font-style: italic;
+      background-color:#000000;
+      background-image: radial-gradient(#ffffff 1px, transparent 1px), radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px);
+      background-size: 12px 12px, 24px 24px;
+      background-attachment: fixed, fixed;
+      animation: dotsParallax 24s linear infinite; 
+      /* two-layer subtle parallax dots */
+      line-height:1.6;
+      padding:16px;
+      overflow-x:hidden;
+    }
+
+    /* Matrix canvas sits behind content */
+    #matrix{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}
+
+    .wrap{
+      width:calc(100% - 64px);
+      max-width:none;
+      margin:28px auto;
+      padding:36px;
+      border-radius:12px;
+      position:relative;
+      z-index:3;
+      background:#000000;
+      box-shadow:0 10px 40px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    header{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+    header h1{
+      margin:0;
+      font-size:clamp(24px,3.6vw,40px);
+      letter-spacing:-0.02em;
+      text-shadow:0 0 10px rgba(0,255,150,0.9), 0 0 20px rgba(124,58,237,0.9);
+      animation: pulseGlow 2.6s ease-in-out infinite;
+    }
+    header p{margin:0;color:var(--muted);font-size:15px}
+
+    /* single-column full-width content */
+    .grid{display:block;margin-top:8px}
+
+    .card{
+      background:#000000;
+      border-radius:12px;
+      padding:22px;
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 0 18px rgba(0,255,150,0.06), 0 0 28px rgba(124,58,237,0.06);
+      transition:all 0.3s ease;
+      margin-bottom:22px;
+    }
+    .card h2{
+      margin:0 0 12px 0;
+      font-size:20px;
+      text-shadow:0 0 8px rgba(0,255,150,0.8), 0 0 14px rgba(124,58,237,0.7);
+    }
+
+    .section-number{display:inline-block;background:#000000;color:#051827;padding:6px 12px;border-radius:999px;font-weight:800;margin-right:12px;font-size:13px}
+
+    ul{padding-left:20px}
+    li{margin-bottom:8px}
+
+    pre{background:#000000;padding:18px;border-radius:12px;overflow:auto;color:#dff7ff;border:1px solid rgba(255,255,255,0.02);font-size:15px}
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;font-size:14px}
+
+    /* Flowchart area */
+    .flow{display:flex;flex-direction:column;gap:18px}
+    /* make SVGs blend with dark background but increase contrast for shapes and text */
+    svg{width:100%;height:auto;border-radius:12px;background:transparent;padding:18px}
+    svg *{vector-effect:non-scaling-stroke}
+    svg text{fill:#e6fff9 !important; font-weight:700}
+    svg rect{stroke:#ffffff !important; fill:#111111 !important; opacity:1 !important}
+    svg line, svg path{stroke:rgba(125,211,252,0.95) !important}
+    svg marker path{fill:rgba(125,211,252,0.95) !important}
+    svg circle, svg ellipse{stroke:rgba(255,255,255,0.12) !important; fill:rgba(255,255,255,0.02) !important}
+
+    /* animated parallax dots */
+    @keyframes dotsParallax{
+      0%{background-position:0 0, 0 0}
+      50%{background-position:120px 60px, -80px -40px}
+      100%{background-position:0 0, 0 0}
+    }
+
+    /* pulsing glow keyframes */
+    @keyframes pulseGlow{
+      0%{text-shadow:0 0 6px rgba(0,255,150,0.6), 0 0 12px rgba(124,58,237,0.6);} 
+      50%{text-shadow:0 0 14px rgba(0,255,150,0.95), 0 0 28px rgba(124,58,237,0.95);} 
+      100%{text-shadow:0 0 6px rgba(0,255,150,0.6), 0 0 12px rgba(124,58,237,0.6);} 
+    }
+
+    /* reduced card pulse for a calmer look */
+    @keyframes cardPulse{
+      0%{box-shadow:0 0 12px rgba(0,255,150,0.04), 0 0 20px rgba(124,58,237,0.04);transform:translateY(0)}
+      50%{box-shadow:0 0 18px rgba(0,255,150,0.08), 0 0 28px rgba(124,58,237,0.08);transform:translateY(-4px)}
+      100%{box-shadow:0 0 12px rgba(0,255,150,0.04), 0 0 20px rgba(124,58,237,0.04);transform:translateY(0)}
+    }
+
+    /* card hover for subtle lift */
+    .card:hover{transform:translateY(-6px);transition:transform 260ms cubic-bezier(.2,.9,.2,1)}
+
+    /* advantages */
+    .advantages{display:flex;gap:12px;flex-wrap:wrap}
+    .adv{flex:1 1 48%;background:#000000;padding:14px;border-radius:10px}
+
+    footer{margin-top:20px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* print-friendly styles */
+    @media print{
+      body{background:#fff;color:#000;font-style:normal}
+      #matrix{display:none}
+      .wrap{background:transparent;box-shadow:none;border:none;padding:0;margin:0;width:100%}
+      .card{background:transparent;box-shadow:none;border:none;padding:8px 0}
+      pre{background:#f7f7f7;color:#111;border:1px solid #ddd}
+      svg{background:transparent}
+      header h1{color:#000;text-shadow:none;font-style:normal}
+      .section-number{display:inline-block;background:#e0e0e0;color:#000;padding:4px 8px}
+      .adv{background:transparent;padding:0}
+      a[href]:after{content:""}
+    }
+
+    /* responsive */
+    @media (max-width:980px){
+      .wrap{padding:20px;width:calc(100% - 32px)}
+      pre{font-size:13px}
+      header h1{font-size:22px}
+    }
   </style>
 </head>
 <body>
+  <canvas id="matrix"></canvas>
   <div class="wrap">
     <header>
       <div>
-        <h1>Recursion and Recursive Problem solving</h1>
-        <p>  PRESENTED BY ACCHUTHA KS</p>
-        <P>MCA I ST YEAR </P>
+        <h1>Recursion & Recursive Problem Solving — Visual Guide</h1>
+        <p>ACCHUTHA KS</p>
+        <P>MCA 1 ST YEAR</P>
         <P>PG00004</P>
       </div>
     </header>
 
-    <section class="grid">
-      <main class="card">
-        <h2>1. What is Recursion?</h2>
-        <p><strong>Recursion</strong> is a programming technique where a function <em>calls itself</em> to solve a smaller part of the same problem. Each call works on a smaller input until a simple base case stops the recursion.</p>
+    <div class="grid">
+      <main>
+        <!-- 1. What is Recursion -->
+        <section class="card">
+          <h2><span class="section-number">1</span>What is Recursion?</h2>
+          <p>Recursion is when a function calls itself to solve smaller instances of the same problem. It needs a <strong>base case</strong> to stop, otherwise it goes infinite.</p>
+        </section>
 
-        <h2>2. Required parts of a recursive function</h2>
-        <ul>
-          <li><strong>Base case</strong> — the simplest input where the answer is known and recursion stops.</li>
-          <li><strong>Recursive case</strong> — the part where the function calls itself with a smaller or simpler input.</li>
-        </ul>
+        <!-- 2. Why Use Recursion -->
+        <section class="card" style="margin-top:14px">
+          <h2><span class="section-number">2</span>Why Use Recursion?</h2>
+          <ul>
+            <li>Cleaner code for problems that split into similar subproblems.</li>
+            <li>Natural for trees, graphs, combinations, and divide-and-conquer algorithms.</li>
+            <li>Makes some algorithms (like DFS, permutations) straightforward.</li>
+          </ul>
+        </section>
 
-        <h2>3. Why use recursion?</h2>
-        <p>Recursion helps break complex problems into smaller identical tasks. It's useful for hierarchical structures (trees) and divide-and-conquer algorithms (merge sort, quicksort), and for problems naturally defined recursively (factorial, Fibonacci, Tower of Hanoi).</p>
+        <!-- 3. How Recursion Works (Flow Diagram) -->
+        <section class="card" style="margin-top:14px">
+          <h2><span class="section-number">3</span>How Recursion Works — Flow Diagram</h2>
+          <div class="flow">
+            <!-- Simple flowchart SVG -->
+            <svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Recursion flowchart">
+              <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                  <path d="M0 0 L10 5 L0 10 z" fill="#7dd3fc" />
+                </marker>
+              </defs>
+              <rect x="24" y="20" width="160" height="44" rx="8" fill="#022f41" stroke="#083b50" />
+              <text x="104" y="48" text-anchor="middle" fill="#bfefff" font-size="14">Start / call f(n)</text>
 
-        <h2>4. How recursion works (step-by-step)</h2>
-        <p>Example function skeleton:</p>
-        <pre>def fun(n):
-    if n == 0:
-        return 1        # base case
-    else:
-        return n * fun(n-1)  # recursive case
-</pre>
-        <p>Call <code>fun(4)</code> — execution grows downward creating stack frames, then returns propagate upward combining results.</p>
+              <line x1="104" y1="64" x2="104" y2="98" stroke="#7dd3fc" stroke-width="2" marker-end="url(#arrow)" />
 
-        <h2>5. Key Terms</h2>
-        <ul>
-          <li><strong>Stack memory</strong> — each recursive call creates a new frame on the call stack (local variables, return address).</li>
-          <li><strong>Stack overflow</strong> — occurs if recursion depth exceeds the available call stack (no base case or too deep recursion).</li>
-        </ul>
+              <rect x="24" y="98" width="240" height="44" rx="8" fill="#022f41" stroke="#083b50" />
+              <text x="144" y="126" text-anchor="middle" fill="#bfefff" font-size="14">Is n ≤ base? (base case)</text>
 
-        <h2>6. Advantages & Disadvantages</h2>
-        <p><strong>Advantages:</strong> concise, expressive for trees/graphs, mirrors mathematical definitions.<br>
-           <strong>Disadvantages:</strong> uses more memory (call frames), may be slower than iterative solutions, risk of stack overflow.</p>
+              <line x1="164" y1="98" x2="320" y2="98" stroke="#7dd3fc" stroke-width="2" marker-end="url(#arrow)" />
 
-        <h2>7. Recursive Problem-Solving Technique (3 steps)</h2>
-        <ol>
-          <li><strong>Identify the base case</strong> — smallest input you know the answer for.</li>
-          <li><strong>Break the problem</strong> into smaller instances and call the function recursively.</li>
-          <li><strong>Combine results</strong> from subproblems to build the final answer.</li>
-        </ol>
+              <rect x="320" y="76" width="220" height="44" rx="8" fill="#022f41" stroke="#083b50" />
+              <text x="430" y="104" text-anchor="middle" fill="#bfefff" font-size="14">If yes → return result</text>
 
-        <h2>8. Examples (Python)</h2>
-        <div class="examples">
-          <div>
-            <h3>Factorial</h3>
-            <pre>def fact(n):
+              <line x1="144" y1="142" x2="144" y2="172" stroke="#7dd3fc" stroke-width="2" marker-end="url(#arrow)" />
+              <rect x="64" y="172" width="320" height="44" rx="8" fill="#022f41" stroke="#083b50" />
+              <text x="224" y="200" text-anchor="middle" fill="#bfefff" font-size="14">If no → compute f(n-1) and combine</text>
+
+            </svg>
+
+            <!-- Call stack illustration -->
+            <svg viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Call stack illustration">
+              <rect x="14" y="14" width="200" height="190" rx="10" fill="#021622" stroke="#083d4b" />
+              <text x="114" y="34" text-anchor="middle" fill="#9adff4" font-size="13">Call Stack (top)</text>
+
+              <!-- Stack frames -->
+              <g fill="#042b36" stroke="#05424f">
+                <rect x="30" y="50" width="170" height="36" rx="6" />
+                <text x="40" y="74" fill="#dff7ff" font-size="12">f(4) — waiting for f(3)</text>
+
+                <rect x="30" y="92" width="170" height="36" rx="6" />
+                <text x="40" y="116" fill="#dff7ff" font-size="12">f(3) — waiting for f(2)</text>
+
+                <rect x="30" y="134" width="170" height="36" rx="6" />
+                <text x="40" y="158" fill="#dff7ff" font-size="12">f(2) — waiting for f(1)</text>
+
+                <rect x="30" y="176" width="170" height="24" rx="6" />
+                <text x="40" y="193" fill="#dff7ff" font-size="12">f(1) — base case</text>
+              </g>
+            </svg>
+          </div>
+        </section>
+
+        <!-- 4. Factorial Example -->
+        <section class="card" style="margin-top:14px">
+          <h2><span class="section-number">4</span>Basic Example — Factorial (Python)</h2>
+          <p>Factorial recursively: <code>n! = n × (n−1)!</code> with <code>0! = 1</code>.</p>
+
+          <!-- Factorial Flowchart -->
+          <svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:12px;">
+            <defs>
+              <marker id="arrow2" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#ffb86c" />
+              </marker>
+            </defs>
+
+            <!-- Start -->
+            <rect x="40" y="20" width="180" height="44" rx="8" fill="#2b1a32" stroke="#ffb86c" />
+            <text x="130" y="48" text-anchor="middle" fill="#ffe8c2">Call factorial(n)</text>
+
+            <!-- Base check -->
+            <line x1="130" y1="64" x2="130" y2="100" stroke="#ffb86c" stroke-width="2" marker-end="url(#arrow2)" />
+            <rect x="40" y="100" width="260" height="44" rx="8" fill="#2b1a32" stroke="#ffb86c" />
+            <text x="170" y="128" text-anchor="middle" fill="#ffe8c2">Is n == 0?</text>
+
+            <!-- Yes path -->
+            <line x1="300" y1="122" x2="450" y2="122" stroke="#ffb86c" stroke-width="2" marker-end="url(#arrow2)" />
+            <rect x="450" y="100" width="220" height="44" rx="8" fill="#2b1a32" stroke="#ffb86c" />
+            <text x="560" y="128" text-anchor="middle" fill="#ffe8c2">Return 1</text>
+
+            <!-- No path -->
+            <line x1="170" y1="144" x2="170" y2="188" stroke="#ffb86c" stroke-width="2" marker-end="url(#arrow2)" />
+            <rect x="60" y="188" width="360" height="54" rx="8" fill="#2b1a32" stroke="#ffb86c" />
+            <text x="240" y="218" text-anchor="middle" fill="#ffe8c2">Return n × factorial(n − 1)</text>
+          </svg>
+
+          <pre><code># Factorial (Python)
+def factorial(n):
     if n == 0:
         return 1
-    return n * fact(n-1)
+    return n * factorial(n - 1)
 
-print(fact(5))  # 120</pre>
-          </div>
+print(factorial(5))  # 120</code></pre>
+        </section>
 
-          <div>
-            <h3>Fibonacci (naïve recursive)</h3>
-            <pre>def fib(n):
+        <!-- 5. Fibonacci Example -->
+        <section class="card" style="margin-top:14px">
+          <h2><span class="section-number">5</span>Fibonacci (Recursive Example)</h2>
+          <p>Recursive Fibonacci splits into two subproblems: fib(n−1) and fib(n−2).</p>
+
+          <!-- Fibonacci Flowchart -->
+          <svg viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:12px;">
+            <defs>
+              <marker id="arrow3" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#8be9fd" />
+              </marker>
+            </defs>
+
+            <!-- Start -->
+            <rect x="40" y="20" width="200" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
+            <text x="140" y="48" text-anchor="middle" fill="#dffaff">Call fib(n)</text>
+
+            <!-- Base check -->
+            <line x1="140" y1="64" x2="140" y2="108" stroke="#8be9fd" stroke-width="2" marker-end="url(#arrow3)" />
+            <rect x="40" y="108" width="280" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
+            <text x="180" y="136" text-anchor="middle" fill="#dffaff">Is n ≤ 1?</text>
+
+            <!-- Yes return -->
+            <line x1="320" y1="130" x2="480" y2="130" stroke="#8be9fd" stroke-width="2" marker-end="url(#arrow3)" />
+            <rect x="480" y="108" width="240" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
+            <text x="600" y="136" text-anchor="middle" fill="#dffaff">Return n</text>
+
+            <!-- No branch -->
+            <line x1="180" y1="152" x2="180" y2="200" stroke="#8be9fd" stroke-width="2" marker-end="url(#arrow3)" />
+
+            <rect x="60" y="200" width="360" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
+            <text x="240" y="228" text-anchor="middle" fill="#dffaff">Compute fib(n−1) and fib(n−2)</text>
+
+            <line x1="240" y1="244" x2="240" y2="286" stroke="#8be9fd" stroke-width="2" marker-end="url(#arrow3)" />
+            <rect x="80" y="286" width="320" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
+            <text x="240" y="314" text-anchor="middle" fill="#dffaff">Return fib(n−1) + fib(n−2)</text>
+          </svg>
+
+          <pre><code># Fibonacci (Python)
+def fib(n):
     if n <= 1:
         return n
     return fib(n-1) + fib(n-2)
 
-print(fib(6))  # 8</pre>
-            <p style="color:var(--muted);margin-top:6px">Note: this version repeats work; memoization or iterative DP is better.</p>
+print([fib(i) for i in range(8)])  # [0,1,1,2,3,5,8,13]</code></pre>
+        </section>
+
+        <!-- 9. Advantages & Disadvantages -->
+        <section class="card" style="margin-top:14px">
+          <h2><span class="section-number">9</span>Advantages & Disadvantages</h2>
+          <div class="advantages">
+            <div class="adv">
+              <strong>Advantages</strong>
+              <ul>
+                <li>Cleaner, often shorter code.</li>
+                <li>Natural fit for tree/graph traversal and divide-and-conquer.</li>
+                <li>Easier to reason about some algorithms (e.g., backtracking).</li>
+              </ul>
+            </div>
+            <div class="adv">
+              <strong>Disadvantages</strong>
+              <ul>
+                <li>Uses stack memory — risk of stack overflow.</li>
+                <li>Sometimes slower than iterative versions.</li>
+                <li>Requires careful base-case design to avoid infinite recursion.</li>
+              </ul>
+            </div>
           </div>
+        </section>
 
-          <div>
-            <h3>Sum of first N natural numbers</h3>
-            <pre>def sum_n(n):
-    if n == 0:
-        return 0
-    return n + sum_n(n-1)
-
-print(sum_n(5))  # 15</pre>
-          </div>
-
-          <div>
-            <h3>Reverse a string</h3>
-            <pre>def reverse(s):
-    if s == "":
-        return s
-    return reverse(s[1:]) + s[0]
-
-print(reverse("hello"))  # olleh</pre>
-          </div>
-
-          <div>
-            <h3>Tower of Hanoi (move print)</h3>
-            <pre>def hanoi(n, src, aux, dst):
-    if n == 1:
-        print(f"Move disk 1 from {src} to {dst}")
-        return
-    hanoi(n-1, src, dst, aux)
-    print(f"Move disk {n} from {src} to {dst}")
-    hanoi(n-1, aux, src, dst)
-
-hanoi(3, 'A', 'B', 'C')</pre>
-          </div>
-        </div>
-
-        <h2>9. Real-life analogy (Indian context)</h2>
-        <p>Nested gift boxes: a big box contains a smaller box which contains another smaller box until the smallest contains a gift. The smallest box is the base case; opening boxes is the recursive step.</p>
-
-        <h2>10. When to use recursion</h2>
-        <p>Use recursion for trees/graphs (DFS), divide-and-conquer, backtracking (N-Queens, Sudoku), and mathematical definitions. Avoid when performance or memory constraints prefer iterative solutions.</p>
-
-        <h2>11. Quick exam summary</h2>
-        <p>Recursion = function calling itself. Must have base case & recursive case. Easy to implement for hierarchical problems but can be memory-heavy and slow for some problems.</p>
-
-        <hr/>
-        <h2>12. Visuals — Flowchart & Diagrams</h2>
-        <p>Below are the embedded SVG flowcharts and diagrams: a flowchart for recursion (factorial example), and three diagrams — Tower of Hanoi, Fibonacci call tree, and Call Stack.</p>
-
-        <div class="diagrams">
-          <!-- Flowchart SVG (compact) -->
-          <div class="diagram">
-            <h3>Recursion Flowchart</h3>
-            <svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" aria-label="Recursion flowchart">
-              <defs>
-                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
-                  <path d="M0 0 L10 5 L0 10 z" fill="#0b1220"/>
-                </marker>
-              </defs>
-              <rect x="220" y="6" width="260" height="46" rx="10" fill="#083c9f"/>
-              <text x="350" y="38" text-anchor="middle" fill="#fff" font-size="20" font-weight="700">RECURSION</text>
-
-              <rect x="200" y="70" width="300" height="44" rx="8" fill="#dff0ff" stroke="#0b5dd7"/>
-              <text x="350" y="101" text-anchor="middle" fill="#042d66" font-size="16">Recursive Function</text>
-
-              <rect x="120" y="140" width="190" height="44" rx="8" fill="#dff7e6" stroke="#1f8a3a"/>
-              <text x="215" y="170" text-anchor="middle" fill="#165b2b" font-size="14">Base Case</text>
-              <rect x="390" y="140" width="210" height="44" rx="8" fill="#fff5df" stroke="#b87a00"/>
-              <text x="495" y="170" text-anchor="middle" fill="#8a5900" font-size="14">Recursive Case</text>
-
-              <line x1="350" y1="114" x2="215" y2="140" stroke="#0b1220" stroke-width="2" marker-end="url(#arrow)"/>
-              <line x1="350" y1="114" x2="495" y2="140" stroke="#0b1220" stroke-width="2" marker-end="url(#arrow)"/>
-
-              <g transform="translate(170,205)">
-                <rect width="360" height="132" rx="12" fill="#eaf3ff" stroke="#cfe4ff"/>
-                <text x="20" y="24" fill="#042d66" font-size="14" font-weight="600">Example — factorial(4)</text>
-                <text x="20" y="46" fill="#0b1220" font-size="16">factorial(4)</text>
-                <text x="40" y="70" fill="#0b1220" font-size="16">→ 4 × factorial(3)</text>
-                <text x="40" y="94" fill="#0b1220" font-size="16">→ 3 × factorial(2)</text>
-                <text x="40" y="118" fill="#0b1220" font-size="16">→ 2 × factorial(1)</text>
-                <text x="40" y="142" fill="#0b1220" font-size="16">→ 1 × factorial(0) = 1</text>
-              </g>
-            </svg>
-          </div>
-
-          <!-- Three small diagrams combined -->
-          <div class="diagram">
-            <h3>Hanoi • Fibonacci tree • Call stack</h3>
-            <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" aria-label="Three recursion diagrams">
-              <!-- Tower of Hanoi -->
-              <g transform="translate(8,8)">
-                <rect x="0" y="0" width="220" height="240" rx="8" fill="#fff" stroke="#e6eefc"/>
-                <text x="110" y="20" text-anchor="middle" font-size="14" font-weight="700">Tower of Hanoi</text>
-                <rect x="20" y="60" width="8" height="110" fill="#111" rx="2"/>
-                <rect x="96" y="60" width="8" height="110" fill="#111" rx="2"/>
-                <rect x="172" y="60" width="8" height="110" fill="#111" rx="2"/>
-                <rect x="12" y="178" width="196" height="8" rx="4" fill="#111"/>
-                <rect x="38" y="140" width="124" height="12" rx="6" fill="#ffd86b"/>
-                <rect x="44" y="124" width="110" height="12" rx="6" fill="#f6c24a"/>
-                <rect x="50" y="108" width="96" height="12" rx="6" fill="#f1a824"/>
-                <text x="38" y="198" font-size="12">A</text>
-                <text x="110" y="198" font-size="12">B</text>
-                <text x="182" y="198" font-size="12">C</text>
-              </g>
-
-              <!-- Fibonacci tree -->
-              <g transform="translate(236,8)">
-                <rect x="0" y="0" width="220" height="240" rx="8" fill="#fff" stroke="#eef6ee"/>
-                <text x="110" y="20" text-anchor="middle" font-size="14" font-weight="700">Fibonacci Tree</text>
-                <g font-size="11" fill="#0b1220">
-                  <circle cx="110" cy="40" r="14" fill="#fff" stroke="#0b1220"/>
-                  <text x="110" y="44" text-anchor="middle" font-weight="700">F(6)</text>
-                  <circle cx="60" cy="78" r="12" fill="#fff" stroke="#0b1220"/>
-                  <text x="60" y="82" text-anchor="middle">F(5)</text>
-                  <circle cx="160" cy="78" r="12" fill="#fff" stroke="#0b1220"/>
-                  <text x="160" y="82" text-anchor="middle">F(4)</text>
-                  <path d="M100 48 L66 66" stroke="#0b1220"/>
-                  <path d="M120 48 L154 66" stroke="#0b1220"/>
-                  <circle cx="36" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
-                  <text x="36" y="118" text-anchor="middle">F(2)</text>
-                  <circle cx="84" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
-                  <text x="84" y="118" text-anchor="middle">F(2)</text>
-                  <circle cx="136" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
-                  <text x="136" y="118" text-anchor="middle">F(2)</text>
-                  <circle cx="184" cy="116" r="10" fill="#fff" stroke="#0b1220"/>
-                  <text x="184" y="118" text-anchor="middle">F(1)</text>
-                </g>
-              </g>
-
-              <!-- Call stack -->
-              <g transform="translate(468,8)">
-                <rect x="0" y="0" width="220" height="240" rx="8" fill="#fff" stroke="#fff4e6"/>
-                <text x="110" y="20" text-anchor="middle" font-size="14" font-weight="700">Call Stack</text>
-                <g font-size="13" fill="#0b1220">
-                  <rect x="30" y="44" width="160" height="34" rx="6" fill="#fff" stroke="#0b1220"/>
-                  <text x="110" y="66" text-anchor="middle" font-weight="700">fact(4)</text>
-                  <rect x="30" y="86" width="160" height="34" rx="6" fill="#fff" stroke="#0b1220"/>
-                  <text x="110" y="108" text-anchor="middle" font-weight="700">fact(3)</text>
-                  <rect x="30" y="128" width="160" height="34" rx="6" fill="#fff" stroke="#0b1220"/>
-                  <text x="110" y="150" text-anchor="middle" font-weight="700">fact(2)</text>
-                </g>
-                <text x="180" y="36" font-size="11" fill="#6b7280">Call →</text>
-                <text x="180" y="216" font-size="11" fill="#6b7280">Return ↓</text>
-              </g>
-            </svg>
-          </div>
-        </div>
-
-        <h3 style="margin-top:14px">Notes on diagrams</h3>
-        <p>Tower of Hanoi demonstrates the sequence of moves. Fibonacci tree shows branching and repeated calls (explains exponential time for naïve recursion). Call stack shows how frames are pushed on calls and popped on returns.</p>
-
-        
       </main>
 
-      <aside class="card">
-        <p><strong>Base case:</strong> n==0 or smallest input. <br>
-           <strong>Recursive case:</strong> call function with smaller input. <br>
-           <strong>Stack depth:</strong> number of active recursive calls.</p>
-
-        <h3>When recursion is bad</h3>
-        <p>If you need high performance or low memory, convert to iterative or use tail recursion optimization (not available in many Python implementations).</p>
-
-        
-      </aside>
-
       
-    </section>
+    </div>
+
+    <footer>
+      Built for learning — edit freely. Ask to add printable PDF, interactive JS, or more examples.
+    </footer>
   </div>
+
+  <script>
+    // Existing visualization and utility functions (call-stack simulator)
+    let ops = [];
+    let pos = 0;
+    let timer = null;
+    const stackFrames = () => document.getElementById('stackFrames');
+    const traceBox = () => document.getElementById('traceBox');
+
+    function logTrace(txt){
+      const d = document.createElement('div');
+      d.textContent = txt;
+      if(traceBox()){
+        traceBox().appendChild(d);
+        traceBox().scrollTop = traceBox().scrollHeight;
+      }
+    }
+
+    function buildFactorialOps(n){
+      const localOps = [];
+      function rec(k){
+        localOps.push({type:'push', name:`fact(${k})`, n:k});
+        if(k === 0){
+          localOps.push({type:'pop', name:`fact(${k})`, value:1});
+          return 1;
+        }
+        const val = rec(k-1);
+        const res = k * val;
+        localOps.push({type:'pop', name:`fact(${k})`, value:res});
+        return res;
+      }
+      rec(n);
+      return localOps;
+    }
+
+    function buildFibOps(n){
+      const localOps = [];
+      function rec(k){
+        localOps.push({type:'push', name:`fib(${k})`, n:k});
+        if(k <= 1){
+          localOps.push({type:'pop', name:`fib(${k})`, value:k});
+          return k;
+        }
+        const a = rec(k-1);
+        const b = rec(k-2);
+        const res = a + b;
+        localOps.push({type:'pop', name:`fib(${k})`, value:res});
+        return res;
+      }
+      rec(n);
+      return localOps;
+    }
+
+    function clearVisual(){
+      if(stackFrames()) stackFrames().innerHTML = '';
+      if(traceBox()) traceBox().innerHTML = '';
+    }
+
+    function renderPush(op){
+      if(!stackFrames()) return;
+      const el = document.createElement('div');
+      el.className = 'frame';
+      el.style.padding = '8px';
+      el.style.border = '1px solid rgba(255,255,255,0.06)';
+      el.style.borderRadius = '6px';
+      el.style.background = 'linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))';
+      el.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas';
+      el.style.fontSize = '13px';
+      el.style.color = '#000';
+      el.textContent = op.name;
+      el.dataset.name = op.name;
+      stackFrames().appendChild(el);
+    }
+
+    function renderPop(op){
+      if(!stackFrames()) return;
+      const frames = Array.from(stackFrames().children);
+      let idx = -1;
+      for(let i = frames.length - 1; i >= 0; --i){
+        if(frames[i].dataset.name === op.name){ idx = i; break; }
+      }
+      if(idx !== -1){
+        const node = frames[idx];
+        node.textContent = `${op.name} → ${op.value}`;
+        node.style.opacity = '0.95';
+        node.style.transition = 'opacity 220ms ease';
+        node.style.boxShadow = '0 6px 18px rgba(0,0,0,0.45)';
+        setTimeout(()=>{ if(node.parentNode) node.parentNode.removeChild(node); }, 500);
+      }
+    }
+
+    function doStep(){
+      if(pos >= ops.length) return false;
+      const op = ops[pos++];
+      if(op.type === 'push'){
+        renderPush(op);
+        logTrace(`PUSH ${op.name}`);
+      } else if(op.type === 'pop'){
+        renderPop(op);
+        logTrace(`POP ${op.name} => ${op.value}`);
+      }
+      return true;
+    }
+
+    function step(){ if(!doStep()) stopPlay(); }
+
+    function play(){
+      if(timer) { stopPlay(); return; }
+      const speed = parseInt(document.getElementById('speed')?.value || '500',10);
+      document.getElementById('playBtn') && (document.getElementById('playBtn').textContent = 'Pause');
+      timer = setInterval(()=>{ const ok = doStep(); if(!ok) stopPlay(); }, speed);
+    }
+
+    function stopPlay(){ clearInterval(timer); timer = null; document.getElementById('playBtn') && (document.getElementById('playBtn').textContent = 'Play'); }
+    function reset(){ stopPlay(); pos = 0; clearVisual(); logTrace('Reset visualization. Press Prepare to rebuild ops.'); }
+
+    function prepare(){
+      stopPlay(); clearVisual();
+      const example = document.getElementById('exampleSelect')?.value || 'factorial';
+      const n = Math.max(0, parseInt(document.getElementById('inputN')?.value || '0', 10));
+      logTrace(`Preparing ${example} with n=${n} ...`);
+      if(example === 'factorial'){
+        ops = buildFactorialOps(n);
+      } else {
+        const clamped = Math.min(n, 10);
+        if(clamped !== n) logTrace('Note: Fibonacci n clamped to 10 for visualization performance.');
+        ops = buildFibOps(clamped);
+      }
+      pos = 0; logTrace(`Prepared ${ops.length} steps. Use Step or Play.`);
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+      document.getElementById('stepBtn')?.addEventListener('click', step);
+      document.getElementById('playBtn')?.addEventListener('click', ()=>{ if(timer) stopPlay(); else play(); });
+      document.getElementById('resetBtn')?.addEventListener('click', reset);
+      document.getElementById('exampleSelect')?.addEventListener('change', ()=>{ if(document.getElementById('exampleSelect').value === 'fibonacci') document.getElementById('inputN').value = 6;});
+      prepare();
+    });
+
+    // Matrix effect (falling green code) - corrected and robust
+    (function(){
+      const canvas = document.getElementById('matrix');
+      if(!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // characters used in the rain
+      const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&()*+<>'.split('');
+
+      // state variables
+      let W = 0, H = 0;
+      let drops = [];
+
+      function init(){
+        resize();
+        window.requestAnimationFrame(frame);
+      }
+
+      function resize(){
+        W = canvas.width = window.innerWidth;
+        // make canvas height match total document height so the rain covers full page
+        H = canvas.height = Math.max(window.innerHeight, document.body.scrollHeight || 0);
+        const cols = Math.floor(W / 14) + 1;
+        // (re)create drops array if column count changed
+        if(drops.length !== cols) drops = new Array(cols).fill(0).map(()=>Math.random()*H/14);
+      }
+
+      window.addEventListener('resize', resize);
+      // also update on scroll/content changes to keep full-page coverage
+      window.addEventListener('scroll', ()=>{ /* no-op but keeps canvas size in sync if needed */ });
+
+      function frame(){
+        // slight translucent fill for trailing effect
+        ctx.fillStyle = 'rgba(0,0,0,0.12)';
+        ctx.fillRect(0,0,W,H);
+        ctx.font = '13px monospace';
+        for(let i=0;i<drops.length;i++){
+          const text = chars[Math.floor(Math.random()*chars.length)];
+          const x = i * 14;
+          const y = drops[i] * 14;
+          // bright head
+          ctx.fillStyle = 'rgba(0,255,120,0.95)';
+          ctx.fillText(text, x, y);
+          // softer trail
+          ctx.fillStyle = 'rgba(0,255,120,0.35)';
+          ctx.fillText(text, x, y-2);
+          // step down; reset with some randomness
+          drops[i] = drops[i] > H/14 + Math.random()*100 ? 0 : drops[i] + 0.8 + Math.random()*0.6;
+        }
+        requestAnimationFrame(frame);
+      }
+
+      // initialize after a short delay to let page layout settle
+      window.addEventListener('load', ()=>{ setTimeout(init, 120); });
+    })();
+
+    function downloadPage(){
+      const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'recursion-guide.html'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+    function toggleTheme(){
+      document.body.classList.toggle('light');
+      if(document.body.classList.contains('light')){
+        document.documentElement.style.setProperty('--bg','#f8fafc');
+        document.documentElement.style.setProperty('--card','#ffffff');
+        document.documentElement.style.setProperty('--accent','#0369a1');
+        document.documentElement.style.setProperty('--muted','#475569');
+        document.documentElement.style.setProperty('--glass','rgba(2,6,23,0.03)');
+        document.body.style.background = 'linear-gradient(180deg,#f8fafc 0%, #e6eef6 100%)';
+        document.body.style.color = '#042a3a';
+      } else {
+        document.documentElement.style.removeProperty('--bg');
+        document.documentElement.style.removeProperty('--card');
+        document.documentElement.style.removeProperty('--accent');
+        document.documentElement.style.removeProperty('--muted');
+        document.documentElement.style.removeProperty('--glass');
+        document.body.style.background = '';
+        document.body.style.color = '';
+      }
+    }
+  </script>
 </body>
 </html>
+
