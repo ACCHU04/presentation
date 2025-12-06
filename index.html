@@ -155,7 +155,9 @@
     <header>
       <div>
         <h1>Recursion & Recursive Problem Solving — Visual Guide</h1>
-        <p>A compact HTML + CSS page that includes flowcharts and key numbered sections (1,2,3,4,5,9).</p>
+        <p>ACCHUTHA KS</p>
+        <P>MCA 1ST YEAR</P>
+        <p>PG00004</p>
       </div>
     </header>
 
@@ -259,7 +261,7 @@
 
             <!-- No path -->
             <line x1="170" y1="144" x2="170" y2="188" stroke="#ffb86c" stroke-width="2" marker-end="url(#arrow2)" />
-            <rect x="60" y="188" width="360" height="54" rx="8" fill="#2b1a32" stroke="#ffb86c" />
+            <rect x="60" y="188" width="450" height="54" rx="8" fill="#2b1a32" stroke="#ffb86c" />
             <text x="240" y="218" text-anchor="middle" fill="#ffe8c2">Return n × factorial(n − 1)</text>
           </svg>
 
@@ -302,7 +304,7 @@ print(factorial(5))  # 120</code></pre>
             <!-- No branch -->
             <line x1="180" y1="152" x2="180" y2="200" stroke="#8be9fd" stroke-width="2" marker-end="url(#arrow3)" />
 
-            <rect x="60" y="200" width="360" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
+            <rect x="60" y="200" width="450" height="44" rx="8" fill="#081a24" stroke="#8be9fd" />
             <text x="240" y="228" text-anchor="middle" fill="#dffaff">Compute fib(n−1) and fib(n−2)</text>
 
             <line x1="240" y1="244" x2="240" y2="286" stroke="#8be9fd" stroke-width="2" marker-end="url(#arrow3)" />
@@ -319,7 +321,107 @@ def fib(n):
 print([fib(i) for i in range(8)])  # [0,1,1,2,3,5,8,13]</code></pre>
         </section>
 
-        <!-- 9. Advantages & Disadvantages -->
+        <!-- 6. Greedy Algorithm -->
+        <section class="card" style="margin-top:14px">
+          <h2><span class="section-number">6</span>Greedy Algorithm</h2>
+          <p>A <strong>greedy algorithm</strong> builds a solution iteratively by choosing the best local option (the "greedy choice") at each step with the hope this leads to a globally optimal solution. Greedy algorithms are simple and fast, but they do not always produce an optimal solution for every problem — correctness depends on the problem's structure (typically optimal substructure and the greedy-choice property).</p>
+
+          <h3 style="margin-top:12px">Typical steps</h3>
+          <ol>
+            <li>Set up an empty solution.</li>
+            <li>While the solution is incomplete: choose the best feasible option now.</li>
+            <li>Update the solution and remaining options.</li>
+            <li>Stop when no more choices are possible.</li>
+          </ol>
+
+          
+
+          <!-- Greedy flowchart -->
+          <svg viewBox="0 0 1200 260" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:12px;">
+            <defs>
+              <marker id="garrow" markerWidth="10" markerHeight="10" refX="6" refY="5" orient="auto">
+                <path d="M0 0 L10 5 L0 10 z" fill="#00ff9c" />
+              </marker>
+            </defs>
+            <rect x="40" y="20" width="900" height="56" rx="10" fill="#081018" stroke="#00ff9c" />
+            <text x="250" y="56" text-anchor="middle" fill="#e6fff9" font-size="18">Start — initialize empty solution</text>
+
+            <line x1="250" y1="76" x2="250" y2="120" stroke="#00ff9c" stroke-width="2" marker-end="url(#garrow)" />
+
+            <rect x="160" y="120" width="620" height="56" rx="10" fill="#081018" stroke="#00ff9c" />
+            <text x="450" y="156" text-anchor="middle" fill="#e6fff9" font-size="18">Select best local feasible option (greedy choice)</text>
+
+            <line x1="450" y1="176" x2="450" y2="220" stroke="#00ff9c" stroke-width="2" marker-end="url(#garrow)" />
+
+            <rect x="40" y="220" width="500" height="56" rx="10" fill="#081018" stroke="#00ff9c" />
+            <text x="250" y="256" text-anchor="middle" fill="#e6fff9" font-size="18">Update solution; remove infeasible options</text>
+
+            <line x1="460" y1="256" x2="820" y2="256" stroke="#00ff9c" stroke-width="2" marker-end="url(#garrow)" />
+            <rect x="820" y="220" width="300" height="56" rx="10" fill="#081018" stroke="#00ff9c" />
+            <text x="970" y="256" text-anchor="middle" fill="#e6fff9" font-size="18">If solution complete → Stop</text>
+          </svg>
+
+          <h3 style="margin-top:12px">Examples</h3>
+          <p><strong>1) Coin Change (canonical coin systems)</strong> — pick largest coin ≤ remaining amount repeatedly. Works optimally for many currencies (like common coin sets), but not all coin systems.</p>
+
+          <!-- Coin Change Flowchart -->
+          <svg viewBox="0 0 2000 600" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:12px;">
+            <defs>
+              <marker id="carrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                <path d="M0 0 L6 3 L0 6 z" fill="#00ff9c" />
+              </marker>
+            </defs>
+
+            <!-- Start -->
+            <rect x="40" y="20" width="500" height="64" rx="10" fill="#081018" stroke="#00ff9c" stroke-width="3" />
+            <text x="250" y="56" text-anchor="middle" fill="#e6fff9" font-size="18">Start — input amount and sorted coins</text>
+
+            <line x1="250" y1="84" x2="250" y2="140" stroke="#00ff9c" stroke-width="3" marker-end="url(#carrow)" />
+
+            <!-- Greedy pick -->
+            <rect x="60" y="140" width="950" height="64" rx="10" fill="#081018" stroke="#00ff9c" stroke-width="3" />
+            <text x="340" y="176" text-anchor="middle" fill="#e6fff9" font-size="18">Pick largest coin c such that c ≤ remaining amount</text>
+
+            <line x1="340" y1="204" x2="340" y2="260" stroke="#00ff9c" stroke-width="3" marker-end="url(#carrow)" />
+
+            <!-- Subtract -->
+            <rect x="60" y="260" width="850" height="64" rx="10" fill="#081018" stroke="#00ff9c" stroke-width="3" />
+            <text x="270" y="296" text-anchor="middle" fill="#e6fff9" font-size="18">Subtract c from remaining amount; add c to result</text>
+
+            <line x1="480" y1="292" x2="860" y2="292" stroke="#00ff9c" stroke-width="3" marker-end="url(#carrow)" />
+
+            <!-- Decision -->
+            <rect x="860" y="256" width="700" height="64" rx="10" fill="#081018" stroke="#00ff9c" stroke-width="3" />
+            <text x="1040" y="292" text-anchor="middle" fill="#e6fff9" font-size="18">Remaining amount == 0 ?</text>
+
+            <line x1="1040" y1="320" x2="1040" y2="360" stroke="#00ff9c" stroke-width="3" marker-end="url(#carrow)" />
+
+            <!-- End -->
+            <rect x="860" y="360" width="700" height="64" rx="10" fill="#081018" stroke="#00ff9c" stroke-width="3" />
+            <text x="1040" y="396" text-anchor="middle" fill="#e6fff9" font-size="18">Yes → Return coin multiset (done)</text>
+
+            <!-- Loop back line -->
+            <line x1="1040" y1="256" x2="620" y2="256" stroke="#00ff9c" stroke-width="3" marker-end="url(#carrow)" />
+            <text x="740" y="240" text-anchor="middle" fill="#e6fff9" font-size="16">No → Repeat</text>
+          </svg>
+
+          <pre><code># Greedy coin change (Python) - canonical coin systems
+coins = [25, 10, 5, 1]  # quarters, dimes, nickels, pennies
+amount = 87
+result = []
+for c in coins:
+    cnt = amount // c
+    if cnt:
+        result.append((c, cnt))
+        amount -= c * cnt
+print(result)  # [(25,3),(10,1),(5,0),(1,2)] -> 3 quarters, 1 dime, 2 pennies</code></pre>
+
+          
+
+          <small style="color:var(--muted);display:block;margin-top:8px">Tip: Always test greedy heuristics with counterexamples — if a greedy choice fails, the approach is not valid for that problem.</small>
+        </section>
+
+<!-- 9. Advantages & Disadvantages -->
         <section class="card" style="margin-top:14px">
           <h2><span class="section-number">9</span>Advantages & Disadvantages</h2>
           <div class="advantages">
